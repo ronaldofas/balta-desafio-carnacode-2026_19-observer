@@ -18,6 +18,18 @@ Neste processo eu aprendi:
 Um sistema financeiro precisa notificar múltiplos investidores quando o preço de ações muda.
 O código atual faz polling constante ou tem dependências diretas entre as ações e os investidores, criando acoplamento forte e código difícil de manter.
 
+## Solução (Observer Pattern)
+A refatoração consistiu em aplicar o **Observer Pattern** para resolver o problema de forte acoplamento (dependências diretas da classe pai - *Subject* - em relação aos *Observers*) e o problema de desperdício de recursos (*polling*).
+
+Foram criadas duas interfaces:
+- `ISubject`: Define métodos para gerenciar inscrições (`Attach`, `Detach`) e disparar notificações genéricas (`Notify`).
+- `IObserver`: Define o contrato com a assinatura `Update` esperado de quem tem interesse na ação.
+
+**Principais Melhorias Implementadas:**
+1. A classe `Stock` abandonou os IFs contendo métodos literais e passou a gerenciar uma lista unificada contendo `IObserver`.
+2. As classes dependentes `Investor`, `MobileApp` e `TradingBot` passaram a implementar `IObserver` em arquivos separados e limpos.
+3. Agora é possível plugar um novo tipo de notificação sem alterar o código primário da Ação (respeitando o Princípio Aberto/Fechado do SOLID) bastando apenas instanciar o objeto chamando o `Attach()`. Múltiplos inscritos de uma mesma categoria ou até remoção dinâmica agora são totalmente possíveis.
+  
 ## Sobre o CarnaCode 2026
 O desafio **CarnaCode 2026** consiste em implementar todos os 23 padrões de projeto (Design Patterns) em cenários reais. Durante os 23 desafios desta jornada, os participantes são submetidos ao aprendizado e prática na idetinficação de códigos não escaláveis e na solução de problemas utilizando padrões de mercado.
 
